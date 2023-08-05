@@ -6,7 +6,6 @@ package UI;
 
 import Model.Employee;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -17,11 +16,10 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainFrom extends javax.swing.JFrame {
 
-    private SimpleDateFormat Tine = new SimpleDateFormat("HH:mm aa");
-    private DefaultTableModel tblModel = new DefaultTableModel();
-    private ArrayList<Employee> dsnv = new ArrayList<>();
-    private Employee nv = new Employee();
 
+    private DefaultTableModel tblModel = new DefaultTableModel();
+    private Service.ElService ser = new Service.ElService();
+    private SimpleDateFormat Tine = new SimpleDateFormat("HH:mm aa");
     /**
      * Creates new form MainFrom
      */
@@ -30,7 +28,6 @@ public class MainFrom extends javax.swing.JFrame {
         initTable();
         fillTable();
         lblDate.setText(new String(Tine.format(new Date())));
-        testData();
     }
     private void initTable(){
         String[] cols = new String[]{
@@ -41,7 +38,7 @@ public class MainFrom extends javax.swing.JFrame {
     }
     private void fillTable(){
         tblModel.setRowCount(0);
-        for (Employee nv : dsnv) {
+        for (Employee nv : ser.getData()) {
             tblModel.addRow(new Object[]{
                 nv.getMaNV() , nv.getName(),nv.getTuoi() , nv.getEmail() ,nv.getLuong()
             });
@@ -49,12 +46,6 @@ public class MainFrom extends javax.swing.JFrame {
         tblModel.fireTableDataChanged();
     }
     
-//    data test
-    private void testData(){
-        nv = new Employee("p01", "Trung", 12, "Trung@gmail.com", 400.000);
-        dsnv.add(nv);
-        fillTable();
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -345,7 +336,8 @@ public class MainFrom extends javax.swing.JFrame {
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
-        System.exit(0);
+        ser.exit();
+        
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
@@ -359,25 +351,12 @@ public class MainFrom extends javax.swing.JFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-        try {
-            for (Employee nv : dsnv) {
-            if (txtMaNhanVien.getText().equals(nv.getMaNV())) {
-                int choose = (JOptionPane.showConfirmDialog(this, "Xoá nhân viên" + nv.getName(), "Xoá", JOptionPane.YES_NO_OPTION));
-                if (choose == JOptionPane.YES_OPTION) {
-                    dsnv.remove(nv);
-                    JOptionPane.showMessageDialog(this, "Đã xoá Nhân Viên");
-                    fillTable();
-                }
-            }
-        }
-        } catch (java.util.ConcurrentModificationException e) {
-            //DO NOTHING
-        }
+        
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFindActionPerformed
         // TODO add your handling code here:
-        for (Employee nv : dsnv) {
+        for (Employee nv : ser.getData()) {
             if (txtMaNhanVien.getText().equals(nv.getMaNV())) {
                 txtMaNhanVien.setText(nv.getMaNV());
                 txtName.setText(nv.getName());
@@ -391,15 +370,26 @@ public class MainFrom extends javax.swing.JFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-        nv = new Employee();
-        nv.setMaNV(txtMaNhanVien.getText());
-        nv.setName(txtName.getText());
-        nv.setTuoi(Integer.parseInt(txtTuoi.getText()));
-        nv.setEmail(txtEmail.getText());
-        nv.setLuong(Double.parseDouble(txtLuong.getText()));
-        dsnv.add(nv);
+        if (!ser.IsEmail(txtEmail.getText())) {
+            JOptionPane.showMessageDialog(this, "Vui long nhap lai email!!!");
+            return;
+        }
+        if (!ser.isDob(txtLuong.getText())) {
+            JOptionPane.showMessageDialog(this, "Vui long nhap lai luong!!!");
+            return;
+        }
+        if (!ser.isBir(txtTuoi.getText())) {
+            JOptionPane.showMessageDialog(this, "Vui long nhap lai Tuoi!!!");
+            return;
+        }
+        Employee e = new Employee(
+                txtMaNhanVien.getText(),
+                txtName.getText(),
+                ERROR,
+                txtEmail.getText(),
+                Double.parseDouble(txtLuong.getText()));
+        ser.addData(e);
         fillTable();
-        JOptionPane.showMessageDialog(this, "Đa thêm");
     }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
