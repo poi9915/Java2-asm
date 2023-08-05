@@ -6,6 +6,7 @@ package UI;
 
 import Model.Employee;
 import java.text.SimpleDateFormat;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -16,36 +17,48 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainFrom extends javax.swing.JFrame {
 
-
     private DefaultTableModel tblModel = new DefaultTableModel();
     private Service.ElService ser = new Service.ElService();
     private SimpleDateFormat Tine = new SimpleDateFormat("HH:mm aa");
+    private int index = 0;
+
     /**
      * Creates new form MainFrom
      */
     public MainFrom() {
         initComponents();
         initTable();
+        ser.testData();
         fillTable();
         lblDate.setText(new String(Tine.format(new Date())));
+        tblNhanVien.setRowSelectionInterval(0, 0);
+        getSelectTbl(0);
+        System.out.println(index);
+        showRecord();
+        
     }
-    private void initTable(){
+    public void showRecord(){
+        String Rec = "Record:" + String.valueOf(index + 1) + ":" + String.valueOf(ser.getData().size());
+        txfRecord.setText(Rec);
+    }
+    private void initTable() {
         String[] cols = new String[]{
-            "MÃ", "TÊN", "TUỔI", "EMAIL","LƯƠNG" 
+            "MÃ", "TÊN", "TUỔI", "EMAIL", "LƯƠNG"
         };
         tblModel.setColumnIdentifiers(cols);
         tblNhanVien.setModel(tblModel);
     }
-    private void fillTable(){
+
+    private void fillTable() {
         tblModel.setRowCount(0);
         for (Employee nv : ser.getData()) {
             tblModel.addRow(new Object[]{
-                nv.getMaNV() , nv.getName(),nv.getTuoi() , nv.getEmail() ,nv.getLuong()
+                nv.getMaNV(), nv.getName(), nv.getTuoi(), nv.getEmail(), nv.getLuong()
             });
         }
         tblModel.fireTableDataChanged();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -73,10 +86,10 @@ public class MainFrom extends javax.swing.JFrame {
         txtLuong = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblNhanVien = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnFirst = new javax.swing.JButton();
+        btnPrevious = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnLast = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         btnNew = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
@@ -143,18 +156,38 @@ public class MainFrom extends javax.swing.JFrame {
                 " Mã", "Họ và Tên", "Tuổi", "Email", "Lương"
             }
         ));
+        tblNhanVien.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblNhanVienMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblNhanVien);
 
-        jButton1.setText("|<");
-
-        jButton2.setText("<<");
-
-        jButton3.setText(">>");
-
-        jButton4.setText(">|");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnFirst.setText("|<");
+        btnFirst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnFirstActionPerformed(evt);
+            }
+        });
+
+        btnPrevious.setText("<<");
+        btnPrevious.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreviousActionPerformed(evt);
+            }
+        });
+
+        btnNext.setText(">>");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
+
+        btnLast.setText(">|");
+        btnLast.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLastActionPerformed(evt);
             }
         });
 
@@ -189,6 +222,11 @@ public class MainFrom extends javax.swing.JFrame {
         });
 
         btnOpen.setText("Open");
+        btnOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpenActionPerformed(evt);
+            }
+        });
 
         btnExit.setText("Exit");
         btnExit.addActionListener(new java.awt.event.ActionListener() {
@@ -255,13 +293,13 @@ public class MainFrom extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnPrevious, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(txfRecord, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(txtMaNhanVien, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -308,10 +346,10 @@ public class MainFrom extends javax.swing.JFrame {
                             .addComponent(txtLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(60, 60, 60)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4)
+                            .addComponent(btnFirst)
+                            .addComponent(btnPrevious)
+                            .addComponent(btnNext)
+                            .addComponent(btnLast)
                             .addComponent(txfRecord)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -330,28 +368,52 @@ public class MainFrom extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMaNhanVienActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+        
+        try {
+            System.out.println(ser.getData().size());
+            tblNhanVien.setRowSelectionInterval(ser.getData().size() - 1, ser.getData().size() - 1 );
+            showRecord();
+        } catch (Exception e) {
+            
+        }
+    }//GEN-LAST:event_btnLastActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
         ser.exit();
-        
+
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         // TODO add your handling code here:
-        txtMaNhanVien.setText("");
-        txtName.setText("");
-        txtTuoi.setText("");
-        txtEmail.setText("");
-        txtLuong.setText("");
+//        index--;
+//        tblNhanVien.setRowSelectionInterval(index, index);
     }//GEN-LAST:event_btnNewActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-        
+        if (txtMaNhanVien.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Vui long nhap lai ma nhan vien!!!");
+            return;
+        }
+        try {
+            for (Employee el : ser.getData()) {
+                if (el.getMaNV().equals(txtMaNhanVien.getText())) {
+                    int choose = (JOptionPane.showConfirmDialog(this, "Co xoa nhan vien Id:" + el.getMaNV(), "Xoa", JOptionPane.YES_NO_OPTION));
+                    if (choose == JOptionPane.YES_OPTION) {
+                        ser.removeData(el);
+                        JOptionPane.showMessageDialog(this, "Da xoa!!");
+                        fillTable();
+                        clearFrom();
+                    }
+                }
+            }
+        } catch (ConcurrentModificationException e) {
+        }
+
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFindActionPerformed
@@ -363,13 +425,24 @@ public class MainFrom extends javax.swing.JFrame {
                 txtTuoi.setText((String.valueOf(nv.getTuoi())));
                 txtEmail.setText(nv.getEmail());
                 txtLuong.setText(String.valueOf(nv.getLuong()));
-                
+                index = ser.getData().indexOf(nv);
+                tblNhanVien.setRowSelectionInterval(index, index);
+                System.out.println(index);
             }
         }
     }//GEN-LAST:event_btnFindActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
+        
+        if (txtMaNhanVien.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Vui long nhap lai ma nhan vien!!!");
+            return;
+        }
+        if (txtName.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Vui long nhap lai ten!!!");
+            return;
+        }
         if (!ser.IsEmail(txtEmail.getText())) {
             JOptionPane.showMessageDialog(this, "Vui long nhap lai email!!!");
             return;
@@ -388,10 +461,81 @@ public class MainFrom extends javax.swing.JFrame {
                 ERROR,
                 txtEmail.getText(),
                 Double.parseDouble(txtLuong.getText()));
-        ser.addData(e);
+        if (ser.updateData(e)) {
+            JOptionPane.showMessageDialog(this, "Da update thong tin nhan vien!!!");
+        } else {
+            ser.addData(e);
+            JOptionPane.showMessageDialog(this, "Da them thong tin nhan vien");
+        }
         fillTable();
+        clearFrom();
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    private void tblNhanVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanVienMouseClicked
+        // TODO add your handling code here:
+        getSelectTbl(tblNhanVien.getSelectedRow());
+    }//GEN-LAST:event_tblNhanVienMouseClicked
+
+    private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
+        // TODO add your handling code here:
+        ser.openData();
+        fillTable();
+    }//GEN-LAST:event_btnOpenActionPerformed
+
+    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
+        // TODO add your handling code here:
+        
+        try {
+            tblNhanVien.setRowSelectionInterval(0, 0);
+            showRecord();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_btnFirstActionPerformed
+
+    private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousActionPerformed
+        // TODO add your handling code here:
+        
+        try {
+            index = index - 1;
+            tblNhanVien.setRowSelectionInterval(index, index);
+            showRecord();
+        } catch (Exception e) {
+        }
+        
+    }//GEN-LAST:event_btnPreviousActionPerformed
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        // TODO add your handling code here:
+        
+        try {
+            index = index + 1;
+            tblNhanVien.setRowSelectionInterval(index, index);
+            showRecord();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_btnNextActionPerformed
+    public void clearFrom(){
+        txtMaNhanVien.setText("");
+        txtName.setText("");
+        txtTuoi.setText("");
+        txtEmail.setText("");
+        txtLuong.setText("");
+    }
+    private void getSelectTbl(int select){
+        if (select >= 0) {
+            String uName = (String) tblModel.getValueAt(select, 0);
+            for (Employee El : ser.getData()) {
+                if (El.getMaNV().equals(uName)) {
+                    txtMaNhanVien.setText(El.getMaNV());
+                    txtName.setText(El.getName());
+                    txtEmail.setText(El.getEmail());
+                    txtTuoi.setText(String.valueOf(El.getTuoi()));
+                    txtLuong.setText(String.valueOf(El.getLuong()));
+                    index = ser.getData().indexOf(El);
+                }
+            }
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -431,15 +575,15 @@ public class MainFrom extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnFind;
+    private javax.swing.JButton btnFirst;
+    private javax.swing.JButton btnLast;
     private javax.swing.JButton btnNew;
+    private javax.swing.JButton btnNext;
     private javax.swing.JButton btnOpen;
+    private javax.swing.JButton btnPrevious;
     private javax.swing.JButton btnSave;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
