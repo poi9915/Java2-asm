@@ -35,7 +35,6 @@ public class MainFrom extends javax.swing.JFrame {
         getSelectTbl(0);
         System.out.println(index);
         showRecord();
-        
     }
     public void showRecord(){
         String Rec = "Record:" + String.valueOf(index + 1) + ":" + String.valueOf(ser.getData().size());
@@ -470,6 +469,7 @@ public class MainFrom extends javax.swing.JFrame {
         }
         fillTable();
         clearFrom();
+        ser.saveData();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void tblNhanVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanVienMouseClicked
