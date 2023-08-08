@@ -374,6 +374,7 @@ public class MainFrom extends javax.swing.JFrame {
         try {
             System.out.println(ser.getData().size());
             tblNhanVien.setRowSelectionInterval(ser.getData().size() - 1, ser.getData().size() - 1 );
+             getSelectTbl(index);
             showRecord();
         } catch (Exception e) {
             
@@ -488,6 +489,7 @@ public class MainFrom extends javax.swing.JFrame {
         try {
             tblNhanVien.setRowSelectionInterval(0, 0);
             showRecord();
+             getSelectTbl(index);
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btnFirstActionPerformed
@@ -499,7 +501,9 @@ public class MainFrom extends javax.swing.JFrame {
             index = index - 1;
             tblNhanVien.setRowSelectionInterval(index, index);
             showRecord();
+             getSelectTbl(index);
         } catch (Exception e) {
+            index = 0;
         }
         
     }//GEN-LAST:event_btnPreviousActionPerformed
@@ -511,7 +515,9 @@ public class MainFrom extends javax.swing.JFrame {
             index = index + 1;
             tblNhanVien.setRowSelectionInterval(index, index);
             showRecord();
+            getSelectTbl(index);
         } catch (Exception e) {
+            index = ser.getData().size() - 1;
         }
     }//GEN-LAST:event_btnNextActionPerformed
     public void clearFrom(){
