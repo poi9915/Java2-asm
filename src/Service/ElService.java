@@ -74,7 +74,7 @@ public class ElService implements Serializable{
                 isPass = true;
             }   
         } catch (NumberFormatException e) {
-            isPass = false;
+          return isPass;
         }
         return isPass;
     }
